@@ -1,5 +1,6 @@
 # TWT_Vandelay
-application uses Flask framework
+application uses Flask and mysql, both hosted locally
+
 to run application, type on command line:
 
 export FLASK_APP=routing.py
@@ -14,5 +15,20 @@ application should show
  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
 
 open http://127.0.0.1:5000/ on web browser
+other endpoints include
+/summary
+/country/<country_name>
+/make/<make_name>
+/pr/less
+/pr/more
 
-note: sql.py and test.py are test files and not necessary for the operation of the app
+Every time the home page is loaded, new data is retrieved from the API
+From the home page, certain filters can be applied 
+   showing data for a specific country
+   showing data for a specific make
+   showing data for a specific price range
+The summary page includes graphs displaying data by country
+   number of cars sold
+   total profit
+   average sale price
+
