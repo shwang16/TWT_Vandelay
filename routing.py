@@ -7,16 +7,40 @@ import requests
 #connect to database
 conn = pymysql.connect(user = 'root', password = 'prplSQL16!', host='127.0.0.1', db = 'flaskapp')
 
-#list of countries
-locs = []
+#create tables in sql db
 
+# cursor = conn.cursor()
+# create_cars = "CREATE TABLE cars( id INT NOT NULL AUTO_INCREMENT,
+#     import_country VARCHAR(50) NOT NULL,
+#     model VARCHAR(25),
+#     make VARCHAR(25),
+#     sold_by VARCHAR(30) NOT NULL,
+#     sale_price INT NOT NULL,
+#     PRIMARY KEY (id),
+#     UNIQUE (import_country, model, make, sold_by, sale_price))"
+# create_countries = "CREATE TABLE countries(
+#     id INT NOT NULL AUTO_INCREMENT,
+#     name VARCHAR(50) NOT NULL,
+#     num INT NOT NULL,
+#     profit INT NOT NULL,
+#     average INT NOT NULL,
+#     PRIMARY KEY (id),
+#     UNIQUE (name))"
+# cursor.execute(create_cars);
+# cursor.execute(create_countries);
+# cursor.close()
+
+#define locations list
+locs = [];
+#home page
 @app.route('/', methods = ['GET', 'POST'])
 def home():
+    #get data from api
     r = requests.get('https://my.api.mockaroo.com/swang.json?key=e6ac1da0')
     list = r.json();
 
+    #synthesize each data point
     for d in list:
-        #set variable values
         make = None
         mod = None
         country = d["import_country"]
@@ -59,7 +83,6 @@ def home():
             conn.commit()
             cursor.close()
 
-
     #add to countries list
     cursor = conn.cursor()
     add_list = "SELECT * FROM countries"
@@ -69,6 +92,7 @@ def home():
     for r in result:
         locs.append(r[1])
 
+    #filter form
     if request.method == 'POST':
         detail = request.form
         if 'one' in detail:
@@ -81,9 +105,9 @@ def home():
             ra = detail['priceR']
             return redirect(url_for('price_range', range=ra))
 
-
     return render_template('display.html', list = locs)
 
+#endpoint for filter by country
 @app.route('/country/<place>')
 def specify_country(place):
 
@@ -103,6 +127,7 @@ def specify_country(place):
 
     return render_template('country.html', data = details, specs=thing)
 
+#filter by make
 @app.route('/make/<value>')
 def show_make(value):
 
@@ -115,6 +140,7 @@ def show_make(value):
 
     return render_template('make.html', data = details, thing = value, length = len(details))
 
+#filter by price range
 @app.route('/pr/<range>')
 def price_range(range):
     #query cars table
@@ -138,6 +164,7 @@ def price_range(range):
 
     return render_template('table.html', data = details, map = map)
 
+#display data on each country relating to price
 @app.route('/summary')
 def summary():
     q = "SELECT * FROM countries"
