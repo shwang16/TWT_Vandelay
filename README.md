@@ -24,11 +24,11 @@ other endpoints include
 
 Every time the home page is loaded, new data is retrieved from the API
 From the home page, certain filters can be applied 
-   showing data for a specific country
-   showing data for a specific make
-   showing data for a specific price range
+   * showing data for a specific country
+   * showing data for a specific make
+   * showing data for a specific price range
 The summary page includes graphs displaying data by country
-   number of cars sold
-   total profit
-   average sale price
+   * number of cars sold
+   * total profit
+   * average sale price
 
