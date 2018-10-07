@@ -1,0 +1,80 @@
+<head>
+<style>
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+</style>
+</head>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
+<canvas id="chart" width="400" height="200"></canvas>
+
+<script>
+var lbls = [];
+var values = [];
+var color = [];
+
+{% for key in map %}
+  color.push('rgba(255, 99, 132, 0.2)');
+  lbls.push( "{{key}}" );
+  values.push({{map[key]}});
+{% endfor %}
+
+var ctx = document.getElementById("chart").getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: lbls,
+        datasets: [{
+            label: 'number of cars sold',
+            data: values,
+            backgroundColor: color,
+            borderColor: color,
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+});
+
+</script>
+
+
+<table>
+	<tr>
+    <th>country</th>
+		<th>make</th>
+		<th>model</th>
+		<th>sold by</th>
+		<th>price</th>
+	</tr>
+	{% for element in data %}
+	<tr>
+    <td>{{element[1]}} </td>
+		<td>{{element[3]}} </td>
+		<td>{{element[2]}} </td>
+		<td>{{element[4]}} </td>
+		<td>{{element[5]}} </td>
+	</tr>
+	{% endfor %}
+</table>

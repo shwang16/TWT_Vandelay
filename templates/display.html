@@ -1,8 +1,27 @@
 <form method = "POST">
+  Country:
   <select name="cty">
     {% for i in list %}
-    <option value={{i}}>{{i}}</option>
+    <option value="{{i}}">{{i}}</option>
     {% endfor %}
+  <input type="submit" name="one">
+</form>
+
+<form method = "POST">
+  Make: <input type=text name="mk" value="none">
+  <input type="submit" name="two">
+</form>
+
+<form method = "POST">
+  Price Range:
+  <select name="priceR">
+    <option value="none">None</option>
+    <option value="less"> <= 15000 </option>
+    <option value="more"> > 15000 </option>
   </select>
-  <input type="submit">
+  <input type="submit" name="three">
+</form>
+
+<form action="/summary">
+  <button type="submit"> Go to summary </button>
 </form>

@@ -44,15 +44,18 @@ def home():
         if row == None:
             #add record
             cursor = conn.cursor()
-            cursor.execute("INSERT INTO countries(name, num, profit) VALUES (%s, %s, %s)", (country, 1, saleprice))
+            line = "INSERT INTO countries(name, num, profit, average) VALUES (%s, %s, %s, %s)"
+            cursor.execute(line, (country, 1, saleprice, saleprice))
             conn.commit()
             cursor.close()
         else:
             #update current record
             newnum = row[2] + 1
             newsale = row[3] + saleprice
+            newavg = newsale / newnum
             cursor = conn.cursor()
-            cursor.execute("UPDATE countries SET num = %s, profit = %s WHERE name = %s", (newnum, newsale, country))
+            update = "UPDATE countries SET num = %s, profit = %s, average = %s WHERE name = %s"
+            cursor.execute(update, (newnum, newsale, newavg, country))
             conn.commit()
             cursor.close()
 
@@ -68,12 +71,20 @@ def home():
 
     if request.method == 'POST':
         detail = request.form
-        place = detail['cty']
-        return redirect(url_for('specify_country', place=place))
+        if 'one' in detail:
+            pl = detail['cty']
+            return redirect(url_for('specify_country', place=pl))
+        elif 'two' in detail:
+            f_ma = detail['mk']
+            return redirect(url_for('show_make', value=f_ma))
+        elif 'three' in detail:
+            ra = detail['priceR']
+            return redirect(url_for('price_range', range=ra))
+
 
     return render_template('display.html', list = locs)
 
-@app.route('/<place>')
+@app.route('/country/<place>')
 def specify_country(place):
 
     #query countries table
@@ -90,7 +101,52 @@ def specify_country(place):
     details = cursor.fetchall()
     cursor.close()
 
-    return render_template('data.html', data = details, specs=thing)
+    return render_template('country.html', data = details, specs=thing)
+
+@app.route('/make/<value>')
+def show_make(value):
+
+    #query cars table
+    query = "SELECT * FROM cars WHERE make= %s ORDER BY import_country, model"
+    cursor = conn.cursor()
+    cursor.execute(query, value)
+    details = cursor.fetchall()
+    cursor.close()
+
+    return render_template('make.html', data = details, thing = value, length = len(details))
+
+@app.route('/pr/<range>')
+def price_range(range):
+    #query cars table
+    if range == "less":
+        query = "SELECT * FROM cars WHERE sale_price <= %s ORDER BY sale_price, import_country, make, model"
+    else:
+        query = "SELECT * FROM cars WHERE sale_price > %s ORDER BY sale_price, import_country, make, model"
+
+    cursor = conn.cursor()
+    cursor.execute(query, 15000)
+    details = cursor.fetchall()
+    cursor.close()
+
+    map = {};
+    for t in details:
+        cy = t[1]
+        if cy in map.keys():
+            map[cy] += 1
+        else:
+            map[cy] = 1
+
+    return render_template('table.html', data = details, map = map)
+
+@app.route('/summary')
+def summary():
+    q = "SELECT * FROM countries"
+    cursor = conn.cursor()
+    cursor.execute(q)
+    table = cursor.fetchall()
+    cursor.close()
+    return render_template('summary.html', table=table)
+
 
 if __name__ == "__main__":
     app.run()

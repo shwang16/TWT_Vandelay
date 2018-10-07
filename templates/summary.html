@@ -1,0 +1,98 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
+<form action="/">
+  <button type="submit"> Go back </button>
+</form>
+
+<canvas id="number" width="400" height="200"></canvas>
+<canvas id="sum" width="400" height="200"></canvas>
+<canvas id="avg" width="400" height="200"></canvas>
+
+<script>
+var lbls = [];
+var nums = [];
+var profit_data = [];
+var avg_data = [];
+var color = [];
+
+
+{% for item in table %}
+  color.push('rgba(255, 99, 132, 0.2)');
+  lbls.push( "{{item[1]}}" );
+  nums.push( {{item[2]}} );
+  profit_data.push( {{item[3]}} );
+  avg_data.push({{item[4]}});
+{% endfor %}
+
+var num = document.getElementById("number").getContext('2d');
+var myChart = new Chart(num, {
+    type: 'bar',
+    data: {
+        labels: lbls,
+        datasets: [{
+            label: 'number of cars sold',
+            data: nums,
+            backgroundColor: color,
+            borderColor: color,
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+});
+
+var csum = document.getElementById("sum").getContext('2d');
+var myChart1 = new Chart(csum, {
+    type: 'bar',
+    data: {
+        labels: lbls,
+        datasets: [{
+            label: 'total profit',
+            data: profit_data,
+            backgroundColor: color,
+            borderColor: color,
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+});
+
+var cavg = document.getElementById("avg").getContext('2d');
+var myChart1 = new Chart(cavg, {
+    type: 'bar',
+    data: {
+        labels: lbls,
+        datasets: [{
+            label: 'average sale price',
+            data: avg_data,
+            backgroundColor: color,
+            borderColor: color,
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+});
+</script>
