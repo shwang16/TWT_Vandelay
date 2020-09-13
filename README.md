@@ -3,8 +3,10 @@ application uses Flask and mysql, both hosted locally
 
 to run application, type on command line:
 
+```
 export FLASK_APP=routing.py
 flask run
+```
 
 application should show 
  * Serving Flask app "routing.py"
